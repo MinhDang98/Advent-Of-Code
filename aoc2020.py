@@ -1,7 +1,7 @@
 import re
 import math
 from collections import defaultdict
-from networkx import DiGraph, dfs_postorder_nodes
+from collections import Counter
 
 
 def day1():
@@ -89,9 +89,6 @@ def day3Helper(array, right, down_value):
 
 def day3():
     print('Day 3')
-    part_1 = 0
-    part_2 = 0
-
     # part 1
     array = []
     with open('2020\input3.txt') as file:
@@ -247,9 +244,6 @@ def day5Helper(data):
 
 def day5():
     print('Day 5')
-    part_1 = 0
-    part_2 = 0
-
     # part 1
     array = []
     with open('2020\input5.txt') as file:
@@ -260,6 +254,7 @@ def day5():
     print(f'Part 1: {part_1}')
 
     # part 2
+    part_2 = 0
     array = sorted(array)
     index = 1
     limit = len(array) - 2
@@ -492,7 +487,6 @@ def day9():
 
     array = []
     with open('2020\input9.txt') as file:
-    # with open('2020\\test.txt') as file:
         for data in file:
             data = data.rstrip()
             data = int(data)
@@ -542,12 +536,18 @@ def day9():
     print(f'Part 2: {part2[0] + part2[-1]}')
 
 
+def day10Helper(array):
+    if len(array) == 1:
+        return 1
+
+    return 1
+
+
 def day10():
     print('Day 10')
     # part 1
     array = []
-    # with open('2020\input10.txt') as file:
-    with open('2020\\test.txt') as file:
+    with open('2020\input10.txt') as file:
         for data in file:
             data = data.rstrip()
             array.append(int(data))
@@ -564,8 +564,22 @@ def day10():
 
     print(f'Part 1: {different_jolt_dict[1] * different_jolt_dict[3]}')
 
-    # TODO: part 2 can't solve
-
+    # part 2 credit to https://www.reddit.com/user/kaur_virunurm/
+    """
+        - start from wall adapter (root node) with input count 1
+        - add this count to the next 1, 2 or 3 adapters / nodes
+        - add their input counts to next adapters / nodes
+        - repeat this for all adapters (in sorted order)
+        - you'll end up with input count for your device adapter
+    """
+    array.insert(0, 0)
+    c = Counter({0: 1})
+    for x in array:
+        c[x + 1] += c[x]
+        c[x + 2] += c[x]
+        c[x + 3] += c[x]
+    print(f'Part 2: {c[max(array) + 3]}')
+        
 
 def day11():
     print('Day 11')
