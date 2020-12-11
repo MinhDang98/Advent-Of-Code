@@ -542,5 +542,34 @@ def day9():
     print(f'Part 2: {part2[0] + part2[-1]}')
 
 
+def day10():
+    print('Day 10')
+    # part 1
+    array = []
+    # with open('2020\input10.txt') as file:
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            array.append(int(data))
+
+    array = sorted(array)
+    start = 0
+    different_jolt_dict = {1: 0, 2: 0, 3: 0}
+
+    for i in array:
+        different_jolt_dict[i - start] += 1
+        start = i
+
+    different_jolt_dict[3] += 1
+
+    print(f'Part 1: {different_jolt_dict[1] * different_jolt_dict[3]}')
+
+    # TODO: part 2 can't solve
+
+
+def day11():
+    print('Day 11')
+
+
 if __name__ == '__main__':
-    day9()
+    day11()
