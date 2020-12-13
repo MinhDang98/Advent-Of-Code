@@ -2,6 +2,7 @@ import re
 import math
 from collections import defaultdict
 from collections import Counter
+import copy
 
 
 def day1():
@@ -579,11 +580,189 @@ def day10():
         c[x + 2] += c[x]
         c[x + 3] += c[x]
     print(f'Part 2: {c[max(array) + 3]}')
-        
+
+
+def day11Helper(seats_map, seat_index, row_index, map_length, row_length):
+    adjacent = []
+    # first row
+    if row_index == 0:
+        # down
+        adjacent.append(seats_map[row_index + 1][seat_index])
+        if seat_index == 0:
+            # right
+            adjacent.append(seats_map[row_index][seat_index + 1])
+            # down right
+            adjacent.append(seats_map[row_index + 1][seat_index + 1])
+            return adjacent
+        elif seat_index == row_length - 1:
+            # left
+            adjacent.append(seats_map[row_index][seat_index - 1])
+            # down left
+            adjacent.append(seats_map[row_index + 1][seat_index - 1])
+            return adjacent
+        # right
+        adjacent.append(seats_map[row_index][seat_index + 1])
+        # down right
+        adjacent.append(seats_map[row_index + 1][seat_index + 1])
+        # left
+        adjacent.append(seats_map[row_index][seat_index - 1])
+        # down left
+        adjacent.append(seats_map[row_index + 1][seat_index - 1])
+        return adjacent
+    # last row
+    if row_index == map_length - 1:
+        # up
+        adjacent.append(seats_map[row_index - 1][seat_index])
+        if seat_index == 0:
+            # right
+            adjacent.append(seats_map[row_index][seat_index + 1])
+            # up right
+            adjacent.append(seats_map[row_index - 1][seat_index + 1])
+            return adjacent
+        elif seat_index == row_length - 1:
+            # left
+            adjacent.append(seats_map[row_index][seat_index - 1])
+            # up left
+            adjacent.append(seats_map[row_index - 1][seat_index - 1])
+            return adjacent
+        # right
+        adjacent.append(seats_map[row_index][seat_index + 1])
+        # up right
+        adjacent.append(seats_map[row_index - 1][seat_index + 1])
+        # left
+        adjacent.append(seats_map[row_index][seat_index - 1])
+        # up left
+        adjacent.append(seats_map[row_index - 1][seat_index - 1])
+        return adjacent
+    # other rows
+    # up
+    adjacent.append(seats_map[row_index - 1][seat_index])
+    # down
+    adjacent.append(seats_map[row_index + 1][seat_index])
+    if seat_index == 0:
+        # right
+        adjacent.append(seats_map[row_index][seat_index + 1])
+        # down right
+        adjacent.append(seats_map[row_index + 1][seat_index + 1])
+        # up right
+        adjacent.append(seats_map[row_index - 1][seat_index + 1])
+        return adjacent
+    elif seat_index == row_length - 1:
+        # left
+        adjacent.append(seats_map[row_index][seat_index - 1])
+        # down left
+        adjacent.append(seats_map[row_index + 1][seat_index - 1])
+        # up left
+        adjacent.append(seats_map[row_index - 1][seat_index - 1])
+        return adjacent
+    # right
+    adjacent.append(seats_map[row_index][seat_index + 1])
+    # up right
+    adjacent.append(seats_map[row_index - 1][seat_index + 1])
+    # down right
+    adjacent.append(seats_map[row_index + 1][seat_index + 1])
+    # left
+    adjacent.append(seats_map[row_index][seat_index - 1])
+    # down left
+    adjacent.append(seats_map[row_index + 1][seat_index - 1])
+    # up left
+    adjacent.append(seats_map[row_index - 1][seat_index - 1])
+    return adjacent
+
 
 def day11():
     print('Day 11')
 
+    seats_map = []
+    row_length = 0
+    with open('2020\input11.txt') as file:
+        for data in file:
+            data = list(data.rstrip())
+            if not row_length:
+                row_length = len(data)
+            seats_map.append(data)
+
+    # part 1
+    temp = []
+    map_length = len(seats_map)
+    count = 0
+    while temp != seats_map:
+        temp = copy.deepcopy(seats_map)
+
+        for row_index, row in enumerate(temp):
+            for seat_index, seat in enumerate(row):
+                if seat == '.':
+                    continue
+                adjacent = day11Helper(temp, seat_index, row_index, map_length, row_length)
+
+                if seat == 'L':
+                    if not adjacent.count('#'):
+                        seats_map[row_index][seat_index] = '#'
+                elif seat == '#':
+                    if adjacent.count('#') >= 4:
+                        seats_map[row_index][seat_index] = 'L'
+        count += 1
+
+    part1 = 0
+    for row in seats_map:
+        for seat in row:
+            if seat == '#':
+                part1 += 1
+    print(f'Part 1: {part1}')
+
+    # TODO: part 2 not done
+
+
+def changeDirection(action, value, current_direction):
+    direction_dict = {'E': 0, 'N': 90, 'W': 180, 'S': 270}
+    if action == 'R':
+        current_direction_value = direction_dict[current_direction]
+        current_direction_value -= value
+    else:
+        current_direction_value = direction_dict[current_direction]
+        current_direction_value += value
+
+    if current_direction_value < 0:
+        current_direction_value += 360
+    elif current_direction_value >= 360:
+        current_direction_value -= 360
+
+    for i in direction_dict:
+        if direction_dict[i] == current_direction_value:
+            return i
+
+
+def day12():
+    print('Day 12')
+
+    instructions = []
+    with open('2020\input12.txt') as file:
+    # with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            action = data[0]
+            value = int(data[1:])
+            instructions.append((action, value))
+
+    direction = {'E': 0, 'W': 0, 'N': 0, 'S': 0}
+    current_direction = 'E'
+
+    for instruction in instructions:
+        action = instruction[0]
+        value = instruction[1]
+        if action == 'R' or action == 'L':
+            # print(current_direction, action, value, end=' ')
+            current_direction = changeDirection(action, value, current_direction)
+            # print(current_direction)
+        elif action == 'F' or action == current_direction:
+            direction[current_direction] += value
+        elif action != current_direction:
+            direction[action] += value
+
+    print(direction)
+    part1 = abs(direction['E'] - direction['W']) + abs(direction['N'] - direction['S'])
+    print(f'Part 1: {part1}')
+
 
 if __name__ == '__main__':
-    day11()
+    day12()
