@@ -710,7 +710,7 @@ def day11():
                 part1 += 1
     print(f'Part 1: {part1}')
 
-    # TODO: part 2 not done
+    # TODO: part 2
 
 
 def changeDirection(action, value, current_direction):
@@ -765,4 +765,4 @@ def day12():
 
 
 if __name__ == '__main__':
-    day12()
+    day11()
