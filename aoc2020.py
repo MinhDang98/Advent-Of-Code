@@ -3,6 +3,7 @@ import math
 from collections import defaultdict
 from collections import Counter
 import copy
+from functools import reduce
 
 
 def day1():
@@ -737,7 +738,6 @@ def day12():
 
     instructions = []
     with open('2020\input12.txt') as file:
-    # with open('2020\\test.txt') as file:
         for data in file:
             data = data.rstrip()
             action = data[0]
@@ -764,5 +764,68 @@ def day12():
     print(f'Part 1: {part1}')
 
 
+def chinese_remainder(n, a):
+    temp_sum = 0
+    prod = reduce(lambda a, b: a * b, n)
+    for n_i, a_i in zip(n, a):
+        p = prod // n_i
+        temp_sum += a_i * mul_inv(p, n_i) * p
+    return temp_sum % prod
+
+
+def mul_inv(a, b):
+    b0 = b
+    x0, x1 = 0, 1
+    if b == 1: return 1
+    while a > 1:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1 - q * x0, x0
+    if x1 < 0: x1 += b0
+    return x1
+
+
+def day13():
+    print('Day 13')
+    time_stamp = 0
+    buses = []
+    buses2 = []
+    with open('2020\input13.txt') as file:
+        for index, data in enumerate(file):
+            data = data.rstrip()
+            if not index:
+                time_stamp = int(data.rstrip())
+            else:
+                data = data.split(',')
+                for i in data:
+                    if i != 'x':
+                        buses.append(int(i))
+                        buses2.append(int(i))
+                    else:
+                        buses2.append(i)
+
+    # part 1
+    depart_time = []
+    for i in buses:
+        depart_time.append(time_stamp // i * i)
+    for bus_num, value in enumerate(depart_time):
+        while value < time_stamp:
+            value += buses[bus_num]
+        depart_time[bus_num] = value
+    min_time = min(depart_time)
+    print(f'Part 1: {(min_time - time_stamp) * buses[depart_time.index(min_time)]}')
+
+    # part 2 Chinese remainder theorem
+    n = []
+    a = []
+    for index, value in enumerate(buses2):
+        if value != 'x':
+            n.append(value)
+            a.append(0 - index)
+    print(n)
+    print(a)
+    print(f'Part 2: {chinese_remainder(n, a)}')
+
+
 if __name__ == '__main__':
-    day11()
+    day13()
