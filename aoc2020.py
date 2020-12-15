@@ -763,6 +763,8 @@ def day12():
     part1 = abs(direction['E'] - direction['W']) + abs(direction['N'] - direction['S'])
     print(f'Part 1: {part1}')
 
+    # TODO: part 2
+
 
 def chinese_remainder(n, a):
     temp_sum = 0
