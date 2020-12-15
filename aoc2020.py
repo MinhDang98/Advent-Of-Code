@@ -827,5 +827,128 @@ def day13():
     print(f'Part 2: {chinese_remainder(n, a)}')
 
 
+def toBinary(value):
+    value = '{0:036b}'.format(int(value))
+    return value
+
+
+def day14Helper(mask, value):
+    value = list(value)
+    for index, i in enumerate(mask):
+        if i != 'X':
+            value[index] = i
+    value = ''.join(value)
+    return int(value, 2)
+
+
+def day14HelperPart2(mask, value):
+    x_indexes = []
+    value = list(value)
+    for index, i in enumerate(mask):
+        if i == '0':
+            continue
+        elif i == 'X':
+            value[index] = '0'
+            x_indexes.append(35 - index)
+        else:
+            value[index] = i
+
+    add = []
+    for i in x_indexes:
+        add.append(2 ** i)
+
+    value = ''.join(value)
+    value = int(value, 2)
+    addresses = set()
+
+    for index, i in enumerate(add):
+        addresses.add(value + i)
+        for t in add[index + 1:]:
+            addresses.add(value + t + i)
+    addresses.add(value)
+    addresses.add(value + sum(add))
+    return addresses
+
+
+def day14():
+    print('Day 14')
+    mask = 0
+    memory = {}
+    # part 1
+    with open('2020\input14.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            data = data.replace(' ', '').split('=')
+            if data[0] == 'mask':
+                mask = data[1]
+            else:
+                value = toBinary(data[1])
+                memory_value = ''.join(c for c in data[0] if c.isdigit())
+                memory[memory_value] = day14Helper(mask, value)
+    part1 = 0
+    for i in memory:
+        part1 += memory[i]
+    print(f'Part 1: {part1}')
+
+    # TODO: part 2
+    mask = 0
+    memory = {}
+    # with open('2020\input14.txt') as file:
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            data = data.replace(' ', '').split('=')
+            if data[0] == 'mask':
+                mask = data[1]
+            else:
+                value = int(data[1])
+                memory_value = toBinary(''.join(c for c in data[0] if c.isdigit()))
+                memory_value = day14HelperPart2(mask, memory_value)
+                for i in memory_value:
+                    memory[i] = value
+    part2 = 0
+    for i in memory:
+        part2 += memory[i]
+    print(f'Part 2: {part2}')
+
+
+def day15Helper(array, turn_limit):
+    turn = 1
+    last = 0
+    count = {}
+    last_time_dict = defaultdict(list)
+    while turn <= turn_limit:
+        if turn <= len(array):
+            last = array[turn - 1]
+        else:
+            if count[last] == 1:
+                last = 0
+            else:
+                last = abs(last_time_dict[last][0] - last_time_dict[last][1])
+        if last not in count:
+            count[last] = 1
+        else:
+            count[last] += 1
+        current_turn = last_time_dict[last]
+        if len(current_turn) < 2:
+            last_time_dict[last].append(turn)
+        else:
+            min_index = current_turn.index(min(current_turn))
+            last_time_dict[last][min_index] = turn
+        turn += 1
+    return last
+
+
+def day15():
+    print('Day 15')
+    # part 1
+    array = [5, 1, 9, 18, 13, 8, 0]
+    part1 = day15Helper(array, 2020)
+    print(f'Part 1: the 2020th number is {part1}')
+    # part 2
+    part2 = day15Helper(array, 30000000)
+    print(f'Part 2: the 30000000th number is {part2}')
+
+
 if __name__ == '__main__':
-    day13()
+    day15()
