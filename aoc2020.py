@@ -783,7 +783,8 @@ def mul_inv(a, b):
         q = a // b
         a, b = b, a % b
         x0, x1 = x1 - q * x0, x0
-    if x1 < 0: x1 += b0
+    if x1 < 0:
+        x1 += b0
     return x1
 
 
@@ -952,5 +953,45 @@ def day15():
     print(f'Part 2: the 30000000th number is {part2}')
 
 
+def day16():
+    print('Day 16')
+    range_array = []
+    pattern = re.compile('[0-9]+')
+    invalid = []
+    my_ticket = None
+    # with open('2020\input16.txt') as file:
+    with open('2020\\test.txt') as file:
+        for line, data in enumerate(file):
+            data = data.rstrip()
+            if not len(data):
+                continue
+            if line < 3:
+                temp = pattern.findall(data)
+                temp2 = 0
+                while temp2 <= 2:
+                    range_array.append((int(temp[temp2]), int(temp[temp2 + 1])))
+                    temp2 += 2
+            elif data == 'your ticket:' or data == 'nearby tickets:':
+                continue
+            else:
+                if not my_ticket:
+                    my_ticket = data.split(',')
+                else:
+                    current_ticket = data.split(',')
+                    for index, value in enumerate(current_ticket):
+                        value = int(value)
+                        temp = False
+                        for i in range_array:
+                            lower, upper = i
+                            if lower <= value <= upper:
+                                temp = True
+                                break
+                            else:
+                                temp = False
+                        if not temp:
+                            invalid.append(value)
+    print(f'Part 1: {sum(invalid)}')
+
+
 if __name__ == '__main__':
-    day15()
+    day16()
