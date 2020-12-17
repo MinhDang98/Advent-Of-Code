@@ -778,7 +778,8 @@ def chinese_remainder(n, a):
 def mul_inv(a, b):
     b0 = b
     x0, x1 = 0, 1
-    if b == 1: return 1
+    if b == 1:
+        return 1
     while a > 1:
         q = a // b
         a, b = b, a % b
@@ -956,20 +957,25 @@ def day15():
 def day16():
     print('Day 16')
     range_array = []
+    range_dict = defaultdict(list)
     pattern = re.compile('[0-9]+')
     invalid = []
+    invalid_index = set()
     my_ticket = None
-    # with open('2020\input16.txt') as file:
-    with open('2020\\test.txt') as file:
+    array = []
+    # part 1
+    with open('2020\input16.txt') as file:
+    # with open('2020\\test.txt') as file:
         for line, data in enumerate(file):
             data = data.rstrip()
             if not len(data):
                 continue
-            if line < 3:
+            if line < 20:
                 temp = pattern.findall(data)
                 temp2 = 0
                 while temp2 <= 2:
                     range_array.append((int(temp[temp2]), int(temp[temp2 + 1])))
+                    range_dict[line].append((int(temp[temp2]), int(temp[temp2 + 1])))
                     temp2 += 2
             elif data == 'your ticket:' or data == 'nearby tickets:':
                 continue
@@ -978,6 +984,7 @@ def day16():
                     my_ticket = data.split(',')
                 else:
                     current_ticket = data.split(',')
+                    array.append(current_ticket)
                     for index, value in enumerate(current_ticket):
                         value = int(value)
                         temp = False
@@ -990,7 +997,32 @@ def day16():
                                 temp = False
                         if not temp:
                             invalid.append(value)
+                            invalid_index.add(line - 8)
     print(f'Part 1: {sum(invalid)}')
+    # part 2
+    ticket_index = []
+    category_num = len(range_dict)
+    for i in range_dict:
+        current_range = range_dict[i]
+        lower1 = current_range[0][0]
+        upper1 = current_range[0][1]
+        lower2 = current_range[1][0]
+        upper2 = current_range[1][1]
+        t = 0
+        while t < category_num:
+            for ti, ticket in array:
+                if ti in invalid:
+                    continue
+
+            t += 1
+
+
+    print(ticket_index)
+    part2 = 1
+    for index, i in enumerate(ticket_index):
+        if i <= 5:
+            part2 *= int(my_ticket[index])
+    print(f'Part 2: {part2}')
 
 
 if __name__ == '__main__':
