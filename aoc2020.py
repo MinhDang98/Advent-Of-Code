@@ -1037,47 +1037,45 @@ def day16():
 # TODO: day 17
 
 
-def day18Helper(var1, op, var2):
-    pass
+def checkParenthesis(data):
+    pattern = re.compile('\([^()]+\)')
+    for i in data:
+
+def day18Helper(data):
+    temp, op = 0, ''
+    total = 0
+    for i in data:
+        if i.isdigit():
+            if not total:
+                total = int(i)
+            else:
+                temp = int(i)
+        else:
+            op = i
+        if temp and op:
+            if op == '+':
+                total = total + temp
+            elif op == '-':
+                total = total - temp
+            elif op == '/':
+                total = total / temp
+            elif op == '*':
+                total = total * temp
+            else:
+                pass
+            temp, op = 0, ''
+    return total
 
 
 def day18():
     print('Day 18')
     # with open('2020\input18.txt') as file:
     part1 = []
+    queue = []
     with open('2020\\test.txt') as file:
         for data in file:
             data = data.rstrip().split(' ')
-            var1, var2, op = 0, 0, ''
-            total = 0
-            for i in data:
-                if i.isdigit():
-                    if not total:
-                        total = int(i)
-                    else:
-                        var2 = int(i)
-                else:
-                    i = list(i)
-                    if len(i) > 1:
-                        if list(i)[0] == '(':
-                            op = '('
-                        elif list(i)[1] == ')':
-                            op = ')'
-                    else:
-                        op = i[0]
-
-                if var2 and op:
-                    if op == '+':
-                        total = total + var2
-                    elif op == '-':
-                        total = total - var2
-                    elif op == '/':
-                        total = total / var2
-                    elif op == '*':
-                        total = total * var2
-                    else:
-                        pass
-                    var2, op = 0, ''
+            total = day18Helper(data)
             part1.append(total)
     print(part1)
 
