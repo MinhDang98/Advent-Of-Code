@@ -965,7 +965,6 @@ def day16():
     array = []
     # part 1
     with open('2020\input16.txt') as file:
-    # with open('2020\\test.txt') as file:
         for line, data in enumerate(file):
             data = data.rstrip()
             if not len(data):
@@ -997,11 +996,12 @@ def day16():
                                 temp = False
                         if not temp:
                             invalid.append(value)
-                            invalid_index.add(line - 8)
+                            invalid_index.add(line - 25)
     print(f'Part 1: {sum(invalid)}')
-    # part 2
+    # TODO: part 2
     ticket_index = []
     category_num = len(range_dict)
+    limit = len(array) - len(invalid_index)
     for i in range_dict:
         current_range = range_dict[i]
         lower1 = current_range[0][0]
@@ -1010,20 +1010,77 @@ def day16():
         upper2 = current_range[1][1]
         t = 0
         while t < category_num:
-            for ti, ticket in array:
-                if ti in invalid:
+            if t in ticket_index:
+                t += 1
+                continue
+            count = 0
+            for ti, ticket in enumerate(array):
+                if ti in invalid_index:
                     continue
-
+                value = int(ticket[t])
+                if lower1 <= value <= upper1 or lower2 <= value <= upper2:
+                    count += 1
+                else:
+                    break
+            if count == limit:
+                ticket_index.append(t)
             t += 1
-
-
     print(ticket_index)
     part2 = 1
     for index, i in enumerate(ticket_index):
         if i <= 5:
+            print(my_ticket[index])
             part2 *= int(my_ticket[index])
     print(f'Part 2: {part2}')
 
 
+# TODO: day 17
+
+
+def day18Helper(var1, op, var2):
+    pass
+
+
+def day18():
+    print('Day 18')
+    # with open('2020\input18.txt') as file:
+    part1 = []
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip().split(' ')
+            var1, var2, op = 0, 0, ''
+            total = 0
+            for i in data:
+                if i.isdigit():
+                    if not total:
+                        total = int(i)
+                    else:
+                        var2 = int(i)
+                else:
+                    i = list(i)
+                    if len(i) > 1:
+                        if list(i)[0] == '(':
+                            op = '('
+                        elif list(i)[1] == ')':
+                            op = ')'
+                    else:
+                        op = i[0]
+
+                if var2 and op:
+                    if op == '+':
+                        total = total + var2
+                    elif op == '-':
+                        total = total - var2
+                    elif op == '/':
+                        total = total / var2
+                    elif op == '*':
+                        total = total * var2
+                    else:
+                        pass
+                    var2, op = 0, ''
+            part1.append(total)
+    print(part1)
+
+
 if __name__ == '__main__':
-    day16()
+    day18()
