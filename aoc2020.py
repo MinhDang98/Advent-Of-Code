@@ -1044,13 +1044,20 @@ def checkParenthesis(data):
     match = [i for i in match]
     if len(match):
         for i in match:
-            upper, lower = i.span()
-            temp.append((upper, day18Helper(data[upper + 1: lower])))
+            lower, upper = i.span()
+            temp.append((lower, upper, day18Helper(data[lower:upper + 1])))
         data = list(data)
         for i in temp:
-            upper, value = i
-            data[upper] = value
-            print(data)
+            lower, upper, value = i
+            data[lower] = value
+            _ = lower + 1
+            while _ < upper:
+                data[_] = ''
+                _ += 1
+        temp = ''
+        for i in data:
+            temp += str(i)
+        return checkParenthesis(temp)
     else:
         return day18Helper(data)
 
@@ -1085,12 +1092,11 @@ def day18Helper(data):
 def day18():
     print('Day 18')
     part1 = []
-    # with open('2020\input18.txt') as file:
-    with open('2020\\test.txt') as file:
+    with open('2020\input18.txt') as file:
         for data in file:
             data = data.rstrip()
             part1.append(checkParenthesis(data))
-    print(part1)
+    print(f'Part 1: {sum(part1)}')
 
 
 if __name__ == '__main__':
