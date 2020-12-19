@@ -1039,10 +1039,18 @@ def day16():
 
 def checkParenthesis(data):
     pattern = re.compile('\([^()]+\)')
-    match = pattern.findall(data)
-    if match:
+    temp = []
+    match = pattern.finditer(data)
+    match = [i for i in match]
+    if len(match):
         for i in match:
-            print(day18Helper(i))
+            upper, lower = i.span()
+            temp.append((upper, day18Helper(data[upper + 1: lower])))
+        data = list(data)
+        for i in temp:
+            upper, value = i
+            data[upper] = value
+            print(data)
     else:
         return day18Helper(data)
 
@@ -1050,9 +1058,9 @@ def checkParenthesis(data):
 def day18Helper(data):
     data = data.replace('(', '')
     data = data.replace(')', '')
+    data = data.split(' ')
     temp, op = 0, ''
     total = 0
-    data = data.split(' ')
     for i in data:
         if i.isdigit():
             if not total:
@@ -1070,16 +1078,14 @@ def day18Helper(data):
                 total = total / temp
             elif op == '*':
                 total = total * temp
-            else:
-                pass
             temp, op = 0, ''
     return total
 
 
 def day18():
     print('Day 18')
-    # with open('2020\input18.txt') as file:
     part1 = []
+    # with open('2020\input18.txt') as file:
     with open('2020\\test.txt') as file:
         for data in file:
             data = data.rstrip()
