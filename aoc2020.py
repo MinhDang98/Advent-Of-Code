@@ -1101,5 +1101,51 @@ def day18():
     # TODO: part 2
 
 
+def day19Helper(rules_dict, special_keys):
+    for i in rules_dict:
+        if i in special_keys:
+            continue
+        rules = rules_dict[i]
+        for rule in rules:
+            for index, value in enumerate(rule):
+                if value in special_keys:
+                    rule[index] = ''.join(rules_dict[value][0])
+
+
+def day19():
+    print('Day 19')
+    # part 1
+    rules_dict = defaultdict(list)
+    change = False
+    array = []
+    special_keys = []
+    # with open('2020\input19.txt') as file:
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            if not len(data):
+                change = True
+                continue
+            if not change:
+                data = data.split(':')
+                key = data[0]
+                value = data[1].split()
+                temp = []
+                for i in value:
+                    if i == '|':
+                        rules_dict[key].append(temp)
+                        temp = []
+                    else:
+                        if not i.isdigit():
+                            i = i[1]
+                            special_keys.append(key)
+                        temp.append(str(i))
+                rules_dict[key].append(temp)
+            else:
+                array.append(data)
+    day19Helper(rules_dict, special_keys)
+    print(rules_dict)
+
+
 if __name__ == '__main__':
-    day18()
+    day19()
