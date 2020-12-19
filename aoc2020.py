@@ -1098,7 +1098,7 @@ def day18():
             data = data.rstrip()
             part1.append(checkParenthesis(data))
     print(f'Part 1: {sum(part1)}')
-    # part 2
+    # TODO: part 2
 
 
 if __name__ == '__main__':
