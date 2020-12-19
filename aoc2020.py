@@ -1091,12 +1091,14 @@ def day18Helper(data):
 
 def day18():
     print('Day 18')
+    # part 1
     part1 = []
     with open('2020\input18.txt') as file:
         for data in file:
             data = data.rstrip()
             part1.append(checkParenthesis(data))
     print(f'Part 1: {sum(part1)}')
+    # part 2
 
 
 if __name__ == '__main__':
