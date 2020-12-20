@@ -1168,6 +1168,8 @@ def day19():
     print(rules_dict)
     print(special_keys)
 
+# TODO: day 20
+
 
 if __name__ == '__main__':
     day19()
