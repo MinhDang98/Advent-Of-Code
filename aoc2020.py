@@ -1133,6 +1133,7 @@ def day19Helper(rules_dict, special_keys):
     day19Helper(rules_dict, special_keys)
 
 
+# TODO: day 19
 def day19():
     print('Day 19')
     # part 1
@@ -1168,9 +1169,11 @@ def day19():
     print(rules_dict)
     print(special_keys)
 
+
 # TODO: day 20
 
 
+# TODO: day 21
 def day21():
     print('Day 21')
     # part 1
