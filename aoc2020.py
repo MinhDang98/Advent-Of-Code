@@ -1171,5 +1171,105 @@ def day19():
 # TODO: day 20
 
 
+def day21():
+    print('Day 21')
+    # part 1
+    # with open('2020\input21.txt') as file:
+    pattern = re.compile('[^, ()]+')
+    ingredients_count = {}
+    allergens = []
+    ingredients = []
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            data = pattern.findall(data)
+            temp = data.index('contains')
+            current_ingredients = data[:temp]
+            ingredients.append(set(current_ingredients))
+            allergens.append(set(data[temp + 1:]))
+            for i in current_ingredients:
+                if i in ingredients_count:
+                    ingredients_count[i] += 1
+                else:
+                    ingredients_count[i] = 1
+    for index, ingredient in enumerate(ingredients):
+        to_remove = set()
+        for i in ingredients[index + 1:]:
+            for t in ingredient:
+                if t in i:
+                    to_remove.add(t)
+        print(to_remove)
+    print(ingredients)
+    print(allergens)
+
+
+def day22Helper(deck):
+    mult = 1
+    out = 0
+    for i in reversed(deck):
+        out += i * mult
+        mult += 1
+    return out
+
+
+def day22Recursive(deck1, deck2):
+    while len(deck1) and len(deck2):
+        card1 = deck1[0]
+        card2 = deck2[0]
+        deck1.pop(0)
+        deck2.pop(0)
+        if card1 > card2:
+            deck1.append(card1)
+            deck1.append(card2)
+        elif card2 > card1:
+            deck2.append(card2)
+            deck2.append(card1)
+    return deck1, deck2
+
+
+def day22():
+    print('Day 22')
+    # part 1
+    deck1 = []
+    deck2 = []
+    flag_2 = False
+    # with open('2020\input22.txt') as file:
+    with open('2020\\test.txt') as file:
+        for data in file:
+            data = data.rstrip()
+            if data == 'Player 1:' or not data:
+                continue
+            elif data == 'Player 2:':
+                flag_2 = True
+                continue
+            if not flag_2:
+                deck1.append(int(data))
+            else:
+                deck2.append(int(data))
+    while len(deck1) and len(deck2):
+        card1 = deck1[0]
+        card2 = deck2[0]
+        deck1.pop(0)
+        deck2.pop(0)
+        if card1 > card2:
+            deck1.append(card1)
+            deck1.append(card2)
+        elif card2 > card1:
+            deck2.append(card2)
+            deck2.append(card1)
+    if len(deck1):
+        part1 = day22Helper(deck1)
+    else:
+        part1 = day22Helper(deck2)
+    print(f'Part 1: {part1}')
+    # part 2
+    deck1, deck2 = day22Recursive(deck1, deck2)
+    if len(deck1):
+        part2 = day22Helper(deck1)
+    else:
+        part2 = day22Helper(deck2)
+    print(f'Part 2: {part2}')
+
+
 if __name__ == '__main__':
-    day19()
+    day22()
