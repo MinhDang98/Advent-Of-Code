@@ -711,7 +711,7 @@ def day11():
                 part1 += 1
     print(f'Part 1: {part1}')
 
-    # TODO: part 2
+    # TODO: day 11 part 2
 
 
 def changeDirection(action, value, current_direction):
@@ -763,7 +763,7 @@ def day12():
     part1 = abs(direction['E'] - direction['W']) + abs(direction['N'] - direction['S'])
     print(f'Part 1: {part1}')
 
-    # TODO: part 2
+    # TODO: day 12 part 2
 
 
 def chinese_remainder(n, a):
@@ -894,7 +894,7 @@ def day14():
         part1 += memory[i]
     print(f'Part 1: {part1}')
 
-    # TODO: part 2
+    # TODO: day 14 part 2
     mask = 0
     memory = {}
     # with open('2020\input14.txt') as file:
@@ -998,7 +998,7 @@ def day16():
                             invalid.append(value)
                             invalid_index.add(line - 25)
     print(f'Part 1: {sum(invalid)}')
-    # TODO: part 2
+    # TODO: day 16 part 2
     ticket_index = []
     category_num = len(range_dict)
     limit = len(array) - len(invalid_index)
@@ -1098,7 +1098,7 @@ def day18():
             data = data.rstrip()
             part1.append(checkParenthesis(data))
     print(f'Part 1: {sum(part1)}')
-    # TODO: part 2
+    # TODO: day 18 part 2
 
 
 def day19Helper(rules_dict, special_keys):
@@ -1274,5 +1274,113 @@ def day22():
     print(f'Part 2: {part2}')
 
 
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+
+class CircularLinkList:
+    def __init__(self):
+        self.head = None
+        self.length = 0
+        self.min = 999
+        self.max = 0
+
+    def add(self, data):
+        if data > self.max:
+            self.max = data
+        elif data < self.min:
+            self.min = data
+        node = Node(data)
+        if not self.head:
+            self.head = node
+            self.head.next = self.head
+            self.head.prev = self.head
+        else:
+            last = self.head.prev
+            node.next = self.head
+            node.prev = last
+            last.next = node
+            self.head.prev = node
+        self.length += 1
+
+    def seek(self, index):
+        temp = self.head
+        temp2 = 0
+        while temp2 != index:
+            temp = temp.next
+            temp2 += 1
+        return temp.data
+
+    def find(self, data):
+        temp = self.head
+        index = 0
+        while temp.data != data:
+            temp = temp.next
+            index += 1
+        return index
+
+    def getThree(self, index):
+        temp = self.head
+        temp2 = 0
+        three = []
+        while temp2 < index + 4:
+            if temp2 != index:
+                three.append(temp.data)
+            temp = temp.next
+            temp2 += 1
+        return three
+
+    def getDestination(self, label, three):
+        dst = 0
+        dst = label - 1
+        while dst in three:
+            dst = dst - 1
+            if dst < self.min:
+                dst = self.max
+        return dst, self.find(dst)
+
+    def swap(self, data, index, three):
+        temp = self.head
+
+    def __str__(self):
+        temp = self.head
+        out = []
+        while temp.next != self.head:
+            out.append(temp.data)
+            temp = temp.next
+        out.append(temp.data)
+        return out
+
+# TODO: day 23
+def day23():
+    print('Day 23')
+    # part 1
+    # data = list('962713854')
+    data = '389125467'
+    cups = CircularLinkList()
+    for i in data:
+        cups.add(int(i))
+    current = 0
+    move = 1
+    while move <= 100:
+        if current == cups.length:
+            current = 0
+        label = cups.seek(current)
+        three = cups.getThree(current)
+        dst, dst_index = cups.getDestination(label, three)
+        print(f'--- move {move} ---')
+        print(f'cups: {cups.__str__()}')
+        print(f'current: {label}')
+        print(f'pick up: {three}')
+        print(f'destination: {dst}')
+        cups.swap(dst, dst_index, three)
+        current += 1
+        move += 1
+        exit()
+
+
 if __name__ == '__main__':
-    day22()
+    day23()
