@@ -1354,33 +1354,57 @@ class CircularLinkList:
         out.append(temp.data)
         return out
 
+
 # TODO: day 23
 def day23():
     print('Day 23')
     # part 1
-    # data = list('962713854')
     data = '389125467'
-    cups = CircularLinkList()
+    cups = []
     for i in data:
-        cups.add(int(i))
-    current = 0
+        cups.append(int(i))
     move = 1
-    while move <= 100:
-        if current == cups.length:
-            current = 0
-        label = cups.seek(current)
-        three = cups.getThree(current)
-        dst, dst_index = cups.getDestination(label, three)
+    current = 0
+    min_value, max_value = min(cups), max(cups)
+    while move <= 10:
+        three = cups[current + 1: current + 4]
+        label = cups[current]
+        dst = label - 1
+        while dst in three:
+            dst -= 1
+            if dst < min_value:
+                dst = max_value
+        dst_index = cups.index(dst)
         print(f'--- move {move} ---')
-        print(f'cups: {cups.__str__()}')
+        print(f'cups: {cups}')
         print(f'current: {label}')
         print(f'pick up: {three}')
         print(f'destination: {dst}')
-        cups.swap(dst, dst_index, three)
-        current += 1
         move += 1
+        current += 1
         exit()
+    # cups = CircularLinkList()
+    # for i in data:
+    #     cups.add(int(i))
+    # current = 0
+    # move = 1
+    # while move <= 100:
+    #     if current == cups.length:
+    #         current = 0
+    #     label = cups.seek(current)
+    #     three = cups.getThree(current)
+    #     dst, dst_index = cups.getDestination(label, three)
+    #     print(f'--- move {move} ---')
+    #     print(f'cups: {cups.__str__()}')
+    #     print(f'current: {label}')
+    #     print(f'pick up: {three}')
+    #     print(f'destination: {dst}')
+    #     cups.swap(dst, dst_index, three)
+    #     current += 1
+    #     move += 1
+    #     exit()
 
 
+# TODO day 24
 if __name__ == '__main__':
     day23()
